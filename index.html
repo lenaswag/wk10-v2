@@ -1,0 +1,1938 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Missing Trophy Mystery | Detective Adventure</title>
+<style>
+:root{
+  --navy:#243b60;
+  --blue:#438de2;
+  --blue-dark:#2866b6;
+  --sky:#e8f4ff;
+  --yellow:#ffd56b;
+  --coral:#ff8d7b;
+  --cream:#fffaf0;
+  --white:#fff;
+  --line:#dce7f3;
+  --mint:#dff7ed;
+  --green:#258b72;
+  --red:#d85d60;
+  --shadow:0 10px 30px rgba(34,61,99,.11);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:#eaf3fc;
+  color:var(--navy);
+  font-family:"Trebuchet MS",Arial,"Malgun Gothic",sans-serif;
+  line-height:1.6;
+}
+button,textarea,input{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.48;cursor:default}
+button:focus-visible,textarea:focus-visible,input:focus-visible{
+  outline:3px solid #f3a52f;
+  outline-offset:3px;
+}
+#app{max-width:1160px;margin:auto;padding:12px}
+.shell{
+  background:var(--cream);
+  border:3px solid white;
+  border-radius:28px;
+  overflow:hidden;
+  min-height:680px;
+  box-shadow:var(--shadow);
+}
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+  background:white;
+  padding:13px 20px;
+  border-bottom:2px solid var(--line);
+}
+.brand{font-weight:900;font-size:17px}
+.stats{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.pill{
+  border:0;
+  border-radius:30px;
+  padding:7px 12px;
+  background:var(--sky);
+  font-weight:900;
+  color:var(--navy);
+  font-size:13px;
+}
+.sound{background:#fff0ce}
+.progress{height:9px;background:#e3ebf5}
+.progress>div{
+  height:100%;
+  background:linear-gradient(90deg,var(--blue),#7ac5ef);
+  transition:width .4s;
+}
+.content{max-width:1020px;margin:auto;padding:24px}
+h1,h2,h3,p{margin-top:0}
+h1{font-size:clamp(30px,5vw,48px);line-height:1.2}
+h2{font-size:clamp(23px,3.5vw,33px)}
+h3{font-size:20px}
+h1,h2,h3{font-weight:900}
+.center{text-align:center}
+.muted{color:#647b99}
+.tag{
+  display:inline-block;
+  background:#fff0c8;
+  color:#93630e;
+  border-radius:30px;
+  padding:5px 14px;
+  font-size:12px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+.btn{
+  border:0;
+  background:var(--blue);
+  color:white;
+  border-radius:15px;
+  padding:13px 22px;
+  font-weight:900;
+  box-shadow:0 5px 0 var(--blue-dark);
+  transition:transform .15s;
+}
+.btn:hover:not(:disabled){transform:translateY(-2px)}
+.btn:active:not(:disabled){transform:translateY(3px)}
+.btn.yellow{
+  background:var(--yellow);
+  color:var(--navy);
+  box-shadow:0 5px 0 #d5a542;
+}
+.btn.coral{
+  background:var(--coral);
+  box-shadow:0 5px 0 #cb6655;
+}
+.btn.green{
+  background:var(--green);
+  box-shadow:0 5px 0 #176f59;
+}
+.btn.outline{
+  background:white;
+  color:var(--navy);
+  border:2px solid var(--line);
+  box-shadow:none;
+}
+.btn.small{font-size:13px;padding:9px 15px}
+.panel{
+  background:white;
+  border:2px solid var(--line);
+  border-radius:21px;
+  padding:20px;
+  box-shadow:var(--shadow);
+}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:19px}
+.flex{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.space{justify-content:space-between}
+.note{
+  background:#fff5dc;
+  border-left:5px solid var(--yellow);
+  padding:13px;
+  border-radius:11px;
+}
+.grammar{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+  margin:20px 0;
+}
+.grammar span{
+  padding:12px 19px;
+  border:2px solid #bedcff;
+  border-radius:13px;
+  background:var(--sky);
+  font-weight:900;
+}
+.grammar span:last-child{
+  background:#fff0c9;
+  border-color:#f2d38b;
+}
+.mapcards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.mapcard{
+  background:white;
+  border:2px solid var(--line);
+  border-radius:16px;
+  padding:12px;
+  text-align:center;
+  font-weight:800;
+}
+.mapcard.current{background:var(--sky);border-color:var(--blue)}
+.mapcard.complete{background:var(--mint);border-color:#4db497}
+.mapcard.locked{opacity:.5}
+.mapcard .emoji{font-size:30px}
+.roomlayout{
+  display:grid;
+  grid-template-columns:1.6fr 1fr;
+  gap:20px;
+}
+.scene{
+  position:relative;
+  aspect-ratio:16/9;
+  overflow:hidden;
+  border:5px solid white;
+  border-radius:22px;
+  background:#d8ecff;
+  box-shadow:var(--shadow);
+}
+.scene svg{width:100%;height:100%;display:block}
+.scene .object{
+  cursor:pointer;
+  transition:filter .2s;
+}
+.scene .object:hover,
+.scene .object:focus{
+  filter:drop-shadow(0 0 10px #ffe28a);
+}
+.scene .object:focus{outline:none}
+.scene .object:not(.done){
+  animation:objectGlow 2.4s ease-in-out infinite;
+}
+.scene .object.done{
+  opacity:.55;
+  cursor:default;
+  animation:none;
+}
+.scene .object.done:hover{filter:none}
+@keyframes objectGlow{
+  0%,100%{filter:drop-shadow(0 0 2px #ffffff88)}
+  50%{filter:drop-shadow(0 0 12px #ffe06e)}
+}
+.scene-label{
+  position:absolute;
+  left:12px;
+  bottom:12px;
+  background:#ffffffed;
+  border-radius:12px;
+  padding:7px 12px;
+  font-weight:800;
+  font-size:12px;
+  pointer-events:none;
+}
+.scene-guide{
+  text-align:center;
+  color:#607b9b;
+  margin-top:10px;
+  font-size:14px;
+}
+.logitem{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  padding:10px;
+  border-bottom:1px solid var(--line);
+}
+.evidence{
+  background:#fff9e9;
+  border:2px dashed #e4bd69;
+  border-radius:15px;
+  padding:14px;
+  margin-top:16px;
+}
+.evidence.locked{
+  background:#f2f5f8;
+  border-color:#cbd4dd;
+  color:#8390a0;
+}
+.evidence p{margin:5px 0 0;font-size:14px}
+.overlay{
+  position:fixed;
+  inset:0;
+  z-index:50;
+  background:#172b47aa;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:15px;
+}
+.modal{
+  width:min(620px,100%);
+  max-height:94vh;
+  overflow:auto;
+  background:white;
+  border:4px solid #fff7e6;
+  border-radius:24px;
+  padding:23px;
+  box-shadow:0 25px 75px #10233c66;
+  animation:pop .3s ease-out;
+}
+@keyframes pop{
+  from{opacity:0;transform:scale(.87) translateY(15px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+.object-preview{
+  background:linear-gradient(145deg,#e9f5ff,#fff7e7);
+  border-radius:18px;
+  min-height:180px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:12px 0;
+  padding:14px;
+}
+.object-preview svg{width:200px;height:160px;max-width:100%}
+.inspect-label{
+  text-align:center;
+  font-size:20px;
+  font-weight:900;
+  margin:6px 0;
+}
+.question h3{
+  font-size:clamp(20px,3vw,25px);
+  margin:12px 0 20px;
+}
+.options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:11px;
+}
+.option,.word{
+  background:#f2f8ff;
+  border:2px solid #d5e5f6;
+  color:var(--navy);
+  border-radius:13px;
+  padding:12px;
+  font-size:17px;
+  font-weight:800;
+  min-height:51px;
+}
+.option:hover:not(:disabled),
+.word:hover:not(:disabled){
+  background:#e3f1ff;
+  border-color:#82b5eb;
+}
+.option.selected{
+  background:#ffe8b5;
+  border-color:#e7ad48;
+}
+.answerarea{
+  background:#f0f7ff;
+  border:2px dashed #a9cdeb;
+  border-radius:15px;
+  min-height:78px;
+  padding:15px;
+  margin:15px 0;
+}
+.answerarea .word{
+  background:#fff0c7;
+  border-color:#e5c36b;
+}
+.wordbank{display:flex;flex-wrap:wrap;gap:9px}
+.word{font-size:15px;padding:9px 14px;min-height:44px}
+.sentence{
+  background:#f3f8ff;
+  padding:15px;
+  border-radius:13px;
+  font-size:20px;
+  font-weight:800;
+  line-height:2.5;
+}
+.token{
+  display:inline-block;
+  background:#fff0c9;
+  border:2px solid #f0d08d;
+  border-radius:9px;
+  padding:0 7px;
+  margin:3px;
+  color:var(--navy);
+  font-weight:800;
+}
+.token.selected{
+  background:#ffbcb0;
+  border-color:#ed7b6b;
+}
+.feedback{
+  border-radius:13px;
+  padding:13px 16px;
+  margin-top:15px;
+  background:#e9f4ff;
+  font-size:14px;
+}
+.feedback.success{background:#dff8ec}
+.feedback.error{background:#fff0df}
+.feedback strong{display:block;font-size:16px}
+.dossier{
+  background:#fffdf4;
+  border:2px solid #e5d2a5;
+  border-radius:15px;
+  padding:15px;
+  margin:10px 0;
+}
+.dossier .num{
+  font-size:11px;
+  color:#a27a31;
+  font-weight:900;
+}
+.dossier p{margin:4px 0 0;font-weight:800}
+.envelope{
+  width:190px;
+  height:120px;
+  margin:20px auto;
+  position:relative;
+  background:#edc177;
+  border-radius:8px;
+  box-shadow:0 8px 20px #72512c33;
+  animation:envelopeRise .65s ease-out;
+}
+.envelope:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:#f5d59b;
+  clip-path:polygon(0 0,50% 57%,100% 0);
+}
+.envelope:after{
+  content:"🔑";
+  position:absolute;
+  left:50%;
+  top:55%;
+  transform:translate(-50%,-50%);
+  font-size:35px;
+}
+@keyframes envelopeRise{
+  from{transform:translateY(60px) scale(.6);opacity:0}
+  to{transform:translateY(0) scale(1);opacity:1}
+}
+.starburst{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  pointer-events:none;
+  overflow:hidden;
+}
+.star{
+  position:absolute;
+  top:50%;
+  left:50%;
+  font-size:28px;
+  animation:starFly .9s ease-out forwards;
+}
+@keyframes starFly{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
+  20%{opacity:1}
+  100%{
+    opacity:0;
+    transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) rotate(220deg) scale(1.2);
+  }
+}
+.trophy-svg{width:170px;display:block;margin:12px auto}
+.trophy-reveal{animation:trophyReveal 1s ease-out}
+@keyframes trophyReveal{
+  0%{opacity:0;transform:scale(.25) rotate(-15deg)}
+  60%{opacity:1;transform:scale(1.15) rotate(5deg)}
+  100%{transform:scale(1) rotate(0)}
+}
+
+/* REPORT WRITING */
+.report-layout{
+  display:grid;
+  grid-template-columns:1fr 1.3fr;
+  gap:19px;
+}
+.report-paper{
+  background:#fff;
+  border:2px solid #d6e3f0;
+  border-radius:19px;
+  padding:22px;
+  box-shadow:var(--shadow);
+}
+.report-heading{
+  border-bottom:3px solid #f0c970;
+  padding-bottom:12px;
+  margin-bottom:18px;
+}
+.report-input{
+  width:100%;
+  min-height:190px;
+  padding:15px 15px 15px 18px;
+  border:2px solid #cadbec;
+  border-radius:13px;
+  resize:vertical;
+  background:repeating-linear-gradient(
+    to bottom,
+    #fff,
+    #fff 34px,
+    #e5edf7 35px,
+    #fff 36px
+  );
+  color:var(--navy);
+  font-size:17px;
+  line-height:36px;
+}
+.report-input:focus{border-color:var(--blue)}
+.report-name{
+  width:100%;
+  padding:11px 13px;
+  border:2px solid #cadbec;
+  border-radius:11px;
+  color:var(--navy);
+  background:white;
+}
+.report-stat{
+  background:#eef6ff;
+  border-radius:10px;
+  padding:10px 13px;
+  font-size:13px;
+  font-weight:800;
+}
+.checklist{
+  display:grid;
+  gap:12px;
+  margin:18px 0;
+}
+.checkrow{
+  display:flex;
+  align-items:flex-start;
+  gap:11px;
+  background:#f5f9ff;
+  border:2px solid #e1eaf4;
+  border-radius:13px;
+  padding:13px;
+  cursor:pointer;
+}
+.checkrow input{
+  width:20px;
+  height:20px;
+  flex:none;
+  margin-top:3px;
+  accent-color:var(--blue);
+}
+.checkrow span{font-size:15px}
+.certificate{
+  position:relative;
+  background:#fffdf6;
+  border:9px double #d9ad4c;
+  border-radius:18px;
+  padding:35px 24px;
+  text-align:center;
+  overflow:hidden;
+}
+.certificate:before,
+.certificate:after{
+  content:"✦";
+  position:absolute;
+  color:#e2b95e;
+  font-size:50px;
+}
+.certificate:before{top:15px;left:22px}
+.certificate:after{bottom:15px;right:22px}
+.certificate h1{
+  font-family:Georgia,serif;
+  font-size:clamp(27px,4vw,42px);
+  color:#956d24;
+}
+.cert-name{
+  display:inline-block;
+  min-width:220px;
+  max-width:100%;
+  border-bottom:2px solid #d9ad4c;
+  padding:9px 15px;
+  font-size:clamp(23px,4vw,32px);
+  font-weight:900;
+  overflow-wrap:anywhere;
+}
+.cert-seal{
+  width:105px;
+  height:105px;
+  border:6px double #d7a83c;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:18px auto;
+  background:#fff0c4;
+  font-size:49px;
+  animation:pop .5s ease-out;
+}
+.result{
+  background:#fff3d5;
+  border:3px solid #f1d17d;
+  border-radius:23px;
+  padding:22px;
+  text-align:center;
+}
+.footer{
+  text-align:center;
+  color:#8795a8;
+  font-size:12px;
+  padding:16px;
+}
+@media(max-width:760px){
+  #app{padding:5px}
+  .content{padding:15px}
+  .roomlayout,.grid2,.report-layout{grid-template-columns:1fr}
+  .scene{aspect-ratio:4/3}
+  .brand{font-size:14px}
+  .pill{font-size:11px;padding:5px 8px}
+  .mapcard{padding:8px 4px;font-size:12px}
+  .mapcard .emoji{font-size:25px}
+  .modal{padding:16px}
+  .option{font-size:15px;padding:10px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition:none!important}
+}
+@media print{
+  body{background:white}
+  #app{padding:0;max-width:none}
+  .shell{border:0;box-shadow:none;min-height:0}
+  .topbar,.progress,.footer,.no-print{display:none!important}
+  .content{padding:0;max-width:none}
+  .certificate{margin:30px auto;max-width:850px;break-inside:avoid}
+  .print-report{display:block!important;margin:30px auto;max-width:850px;white-space:pre-wrap}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+"use strict";
+
+/* =========================================
+   THE MISSING TROPHY MYSTERY
+   Grade 6 · Passive Voice · 15 minutes
+
+   6 controlled grammar questions
+   2 evidence-based final questions
+   1 guided free-writing report
+   1 self-check
+   1 completion certificate
+
+   Single-file HTML / CSS / JavaScript
+   Inline SVG illustrations
+   Web Audio API sound effects
+========================================= */
+
+const app=document.getElementById("app");
+
+/* SOUND */
+let soundEnabled=true;
+let audioContext=null;
+
+function getAudio(){
+  if(!soundEnabled)return null;
+  try{
+    if(!audioContext){
+      const Ctx=window.AudioContext||window.webkitAudioContext;
+      if(!Ctx)return null;
+      audioContext=new Ctx();
+    }
+    if(audioContext.state==="suspended")audioContext.resume();
+    return audioContext;
+  }catch(e){return null}
+}
+function tone(freq,duration=.12,type="sine",volume=.07,delay=0){
+  const ctx=getAudio();
+  if(!ctx)return;
+  try{
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    const start=ctx.currentTime+delay;
+    osc.type=type;
+    osc.frequency.setValueAtTime(freq,start);
+    gain.gain.setValueAtTime(.001,start);
+    gain.gain.exponentialRampToValueAtTime(volume,start+.015);
+    gain.gain.exponentialRampToValueAtTime(.001,start+duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(start);
+    osc.stop(start+duration+.02);
+  }catch(e){}
+}
+function sfx(name){
+  if(!soundEnabled)return;
+  if(name==="click")tone(490,.07,"sine",.035);
+  if(name==="inspect"){
+    tone(440,.10,"triangle",.05);
+    tone(660,.13,"triangle",.05,.10);
+  }
+  if(name==="correct"){
+    tone(523,.12,"sine",.07);
+    tone(659,.12,"sine",.07,.13);
+    tone(784,.22,"sine",.08,.26);
+  }
+  if(name==="wrong"){
+    tone(330,.13,"triangle",.04);
+    tone(260,.18,"triangle",.035,.14);
+  }
+  if(name==="clue"){
+    [523,659,784,1047].forEach((f,i)=>tone(f,.2,"sine",.06,i*.13));
+  }
+  if(name==="victory"){
+    [523,659,784,1047,1318,1568].forEach((f,i)=>tone(f,.24,"triangle",.06,i*.14));
+  }
+}
+function toggleSound(){
+  soundEnabled=!soundEnabled;
+  if(soundEnabled)sfx("click");
+  render();
+}
+
+/* STORY
+   Evidence 1: The trophy was put inside a large box.
+   Evidence 2: The trophy box was carried to the library.
+   Evidence 3: The box was placed behind the science books.
+   The trophy's location follows from these clues.
+   No culprit is invented.
+*/
+
+const clues=[
+  "The trophy was put inside a large box after school.",
+  "The trophy box was carried into the library.",
+  "The box was placed behind the science books."
+];
+const clueKorean=[
+  "트로피가 방과 후 큰 상자 안에 넣어졌어요.",
+  "트로피가 든 상자가 도서관으로 옮겨졌어요.",
+  "그 상자가 과학책 뒤에 놓였어요."
+];
+
+const rooms=[
+  {
+    name:"The Classroom",ko:"교실",icon:"🏫",
+    intro:"교실의 책상과 창문을 직접 클릭해 조사하세요.",
+    objects:[
+      {name:"Desk",ko:"책상"},
+      {name:"Window",ko:"창문"}
+    ],
+    questions:[
+      {
+        type:"choice",
+        prompt:"The desks ___ cleaned every day.",
+        choices:["is","are","was","were"],
+        answer:1,
+        explanation:"desks는 복수이고 every day는 현재의 반복을 나타내므로 are cleaned가 맞아요."
+      },
+      {
+        type:"choice",
+        prompt:"The window ___ broken yesterday.",
+        choices:["is","are","was","were"],
+        answer:2,
+        explanation:"window는 단수이고 yesterday는 과거를 나타내므로 was broken이 맞아요."
+      }
+    ]
+  },
+  {
+    name:"The Art Room",ko:"미술실",icon:"🎨",
+    intro:"그림과 상자를 조사하고 능동태 문장을 수동태로 바꿔보세요.",
+    objects:[
+      {name:"Painting",ko:"그림"},
+      {name:"Box",ko:"상자"}
+    ],
+    questions:[
+      {
+        type:"build",
+        prompt:"Emma painted the picture.",
+        prefix:"The picture",
+        words:["is","painted","by Emma","was"],
+        answer:["was","painted","by Emma"],
+        explanation:"과거의 행동이므로 The picture was painted by Emma.가 맞아요."
+      },
+      {
+        type:"build",
+        prompt:"The teacher opened the box.",
+        prefix:"The box",
+        words:["opened","was","opens","by the teacher"],
+        answer:["was","opened","by the teacher"],
+        explanation:"opened는 과거의 행동이므로 was opened가 맞아요."
+      }
+    ]
+  },
+  {
+    name:"The Library",ko:"도서관",icon:"📚",
+    intro:"책장과 문을 조사하고 잘못된 수동태 문장을 수정하세요.",
+    objects:[
+      {name:"Books",ko:"책장"},
+      {name:"Door",ko:"문"}
+    ],
+    questions:[
+      {
+        type:"error",
+        tokens:["The","books","is","arranged","every","morning."],
+        wrong:2,
+        choices:["are","was","be","were"],
+        answer:0,
+        explanation:"books는 복수이고 every morning은 현재의 반복이므로 are arranged가 맞아요."
+      },
+      {
+        type:"error",
+        tokens:["The","door","was","lock","yesterday."],
+        wrong:3,
+        choices:["locking","locked","locks","lock"],
+        answer:1,
+        explanation:"수동태는 be + 과거분사이므로 was locked가 맞아요."
+      }
+    ]
+  }
+];
+
+const finals=[
+  {
+    prompt:"Where was the trophy put after school?",
+    choices:["Inside a large box","Under a desk","Behind a window","On a classroom board"],
+    answer:0,
+    explanation:"Evidence 1에 트로피가 큰 상자 안에 넣어졌다고 나와 있어요."
+  },
+  {
+    prompt:"Where was the trophy box placed?",
+    choices:["Under the classroom desk","Behind the science books","Near the art room window","Inside the cafeteria"],
+    answer:1,
+    explanation:"Evidence 2와 3을 함께 보면 상자가 도서관 과학책 뒤에 놓였다는 사실을 알 수 있어요."
+  }
+];
+
+/* STATE */
+let state;
+function resetState(){
+  state={
+    screen:"intro",
+    room:0,
+    solved:[[],[],[]],
+    clues:[false,false,false],
+    score:0,
+    firstTry:0,
+    mistakes:[],
+    current:null,
+    selectedWords:[],
+    selectedError:null,
+    selectedOption:null,
+    correct:false,
+    feedback:"",
+    questionTries:0,
+    hintUsed:false,
+    finalIndex:0,
+    finalSolved:[],
+    finalChecked:false,
+    report:"",
+    detectiveName:"",
+    selfChecks:[false,false,false],
+    reportSubmitted:false,
+    startedAt:null
+  };
+}
+resetState();
+
+function escapeHTML(v){
+  return String(v).replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#39;"
+  }[c]));
+}
+function solvedCount(){
+  return state.solved.reduce((n,a)=>n+a.length,0)+state.finalSolved.length;
+}
+function progressPercent(){
+  const base=solvedCount()/8*78;
+  if(state.screen==="report")return 82;
+  if(state.screen==="selfcheck")return 91;
+  if(state.screen==="certificate")return 100;
+  return base;
+}
+function header(){
+  return `
+    <header class="topbar">
+      <div class="brand">🔎 THE MISSING TROPHY MYSTERY</div>
+      <div class="stats">
+        <span class="pill">⭐ ${state.score} XP</span>
+        <span class="pill">🧩 ${solvedCount()}/8</span>
+        <span class="pill">🗝️ ${state.clues.filter(Boolean).length}/3</span>
+        <button class="pill sound" onclick="toggleSound()" aria-label="효과음 켜기 또는 끄기">
+          ${soundEnabled?"🔊 ON":"🔇 OFF"}
+        </button>
+      </div>
+    </header>
+    <div class="progress"><div style="width:${progressPercent()}%"></div></div>
+  `;
+}
+function layout(content){
+  app.innerHTML=`
+    <main class="shell">
+      ${header()}
+      <div class="content">${content}</div>
+      <footer class="footer">PASSIVE VOICE QUEST · GRADE 6 · DETECTIVE ADVENTURE</footer>
+    </main>
+  `;
+}
+function render(){
+  if(state.screen==="intro")return intro();
+  if(state.screen==="rules")return rules();
+  if(state.screen==="room")return renderRoom();
+  if(state.screen==="finalIntro")return finalIntro();
+  if(state.screen==="final")return renderFinal();
+  if(state.screen==="report")return renderReport();
+  if(state.screen==="selfcheck")return renderSelfCheck();
+  if(state.screen==="certificate")return renderCertificate();
+}
+
+/* ANIMATION */
+function stars(){
+  const layer=document.createElement("div");
+  layer.className="starburst";
+  const symbols=["⭐","✨","🌟","⭐","✨","🌟","⭐","✨"];
+  symbols.forEach((symbol,i)=>{
+    const star=document.createElement("span");
+    star.className="star";
+    star.textContent=symbol;
+    const angle=Math.PI*2*i/symbols.length;
+    const distance=130+Math.random()*110;
+    star.style.setProperty("--x",Math.cos(angle)*distance+"px");
+    star.style.setProperty("--y",Math.sin(angle)*distance+"px");
+    layer.appendChild(star);
+  });
+  document.body.appendChild(layer);
+  setTimeout(()=>layer.remove(),1000);
+}
+
+/* SVG CHARACTERS */
+function detectiveSVG(){
+  return `<svg viewBox="0 0 160 190" width="145" role="img" aria-label="탐정 캐릭터">
+    <ellipse cx="80" cy="178" rx="55" ry="9" fill="#cbd9e7"/>
+    <path d="M38 125Q80 105 122 125L130 176H30Z" fill="#d8a16e"/>
+    <path d="M67 125L80 149L93 125" fill="#fff"/>
+    <path d="M77 146H83L88 166L80 174L72 166Z" fill="#438ce0"/>
+    <circle cx="80" cy="80" r="47" fill="#ffddb6"/>
+    <path d="M33 71Q25 30 80 27Q135 30 127 71Q104 52 80 54Q56 52 33 71" fill="#604635"/>
+    <path d="M45 43L57 14H103L115 43Z" fill="#c18c59"/>
+    <path d="M29 45Q80 57 131 45" fill="none" stroke="#8b6243" stroke-width="11" stroke-linecap="round"/>
+    <circle cx="63" cy="84" r="4" fill="#304761"/>
+    <circle cx="97" cy="84" r="4" fill="#304761"/>
+    <path d="M69 103Q80 114 91 103" fill="none" stroke="#c77b70" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="122" cy="112" r="24" fill="#d8f1ff" fill-opacity=".5" stroke="#426e9e" stroke-width="7"/>
+    <path d="M139 129L157 147" stroke="#426e9e" stroke-width="11" stroke-linecap="round"/>
+  </svg>`;
+}
+function trophySVG(){
+  return `<svg class="trophy-svg trophy-reveal" viewBox="0 0 180 190" role="img" aria-label="황금 트로피">
+    <ellipse cx="90" cy="181" rx="65" ry="8" fill="#ddcda8"/>
+    <path d="M55 20H125L116 96Q90 123 64 96Z" fill="#ffc846" stroke="#d49a2b" stroke-width="5"/>
+    <path d="M55 35Q10 18 21 66Q28 88 64 85" fill="none" stroke="#e6ad36" stroke-width="12"/>
+    <path d="M125 35Q170 18 159 66Q152 88 116 85" fill="none" stroke="#e6ad36" stroke-width="12"/>
+    <path d="M90 111V149" stroke="#dfa42f" stroke-width="15"/>
+    <rect x="48" y="147" width="84" height="25" rx="5" fill="#c88c30"/>
+    <path d="M90 38L97 55L115 56L101 68L106 86L90 76L74 86L79 68L65 56L83 55Z" fill="#fff1ae"/>
+  </svg>`;
+}
+function books(x,y,n){
+  const colors=["#f5a37c","#81b6dd","#e6bf5c","#8fc7ad","#bd9ecf","#e98f8b","#74a4c7"];
+  let html="";
+  for(let i=0;i<n;i++){
+    html+=`<rect x="${x+i*23}" y="${y+(i%3)*4}" width="18"
+      height="${43-(i%3)*4}" rx="3" fill="${colors[i%colors.length]}"
+      stroke="#ffffff88" stroke-width="2"/>`;
+  }
+  return html;
+}
+function interactiveGroup(room,index,content){
+  const done=state.solved[room].includes(index);
+  const label=rooms[room].objects[index].ko;
+  return `<g class="object ${done?"done":""}"
+    role="button" tabindex="${done?-1:0}"
+    aria-label="${escapeHTML(label)} 조사${done?" 완료":""}"
+    onclick="${done?"":"inspect("+index+")"}"
+    onkeydown="${done?"":"objectKey(event,"+index+")"}">
+    ${content}
+  </g>`;
+}
+function roomSVG(id){
+  const common=`
+    <rect width="800" height="450" fill="#d6eafa"/>
+    <rect y="320" width="800" height="130" fill="#e7bf96"/>
+    <path d="M0 320H800" stroke="#c99b73" stroke-width="8"/>
+    <path d="M0 390H800M150 320L100 450M400 320V450M650 320L700 450"
+      stroke="#d5a97f" stroke-width="3" opacity=".5"/>
+    <circle cx="700" cy="57" r="26" fill="#fff3b6" opacity=".65"/>
+  `;
+  let art="";
+  if(id===0){
+    art=`
+      <rect x="265" y="68" width="270" height="160" rx="12" fill="#a5c7db" stroke="white" stroke-width="10"/>
+      <rect x="285" y="88" width="230" height="120" rx="5" fill="#355e63"/>
+      <path d="M315 126H462M315 156H420" stroke="#d7f3d5" stroke-width="5" opacity=".8"/>
+      ${interactiveGroup(0,1,`
+        <rect x="595" y="60" width="160" height="180" rx="7" fill="#fff" stroke="#7ba9d5" stroke-width="10"/>
+        <rect x="608" y="73" width="134" height="154" fill="#b9e5ff"/>
+        <path d="M608 220L640 173L675 214L710 164L742 215V227H608Z" fill="#95c9a4"/>
+        <path d="M675 65V236M600 150H750" stroke="#7ba9d5" stroke-width="9"/>
+        <path d="M658 160L678 142L666 177L691 167L675 195" fill="none" stroke="#fff" stroke-width="4"/>
+      `)}
+      ${interactiveGroup(0,0,`
+        <rect x="75" y="295" width="280" height="48" rx="9" fill="#bd8058"/>
+        <path d="M105 340V418M330 340V418" stroke="#986747" stroke-width="17"/>
+        <rect x="125" y="263" width="95" height="31" rx="5" fill="#f3cb6d"/>
+        <rect x="145" y="251" width="95" height="31" rx="5" fill="#fff0b8"/>
+        <rect x="253" y="270" width="55" height="23" rx="4" fill="#8bbce5"/>
+      `)}
+      <rect x="485" y="294" width="145" height="37" rx="8" fill="#bd8058"/>
+      <path d="M505 330V410M614 330V410" stroke="#986747" stroke-width="15"/>
+      <circle cx="90" cy="83" r="34" fill="#fff" stroke="#7298c1" stroke-width="8"/>
+      <path d="M90 83V61M90 83L108 92" stroke="#7298c1" stroke-width="6" stroke-linecap="round"/>
+    `;
+  }else if(id===1){
+    art=`
+      ${interactiveGroup(1,0,`
+        <rect x="95" y="70" width="260" height="215" rx="12" fill="#fff" stroke="#b78b60" stroke-width="14"/>
+        <rect x="125" y="100" width="200" height="155" rx="4" fill="#e9f5ff"/>
+        <circle cx="225" cy="148" r="37" fill="#ffd26b"/>
+        <path d="M125 240L187 175L227 220L275 157L325 223V255H125Z" fill="#87c5ae"/>
+        <path d="M225 285V330M153 330H300" stroke="#aa7955" stroke-width="13" stroke-linecap="round"/>
+      `)}
+      <rect x="440" y="265" width="280" height="42" rx="9" fill="#c68e64"/>
+      <path d="M460 307V408M700 307V408" stroke="#a36c4b" stroke-width="16"/>
+      <ellipse cx="570" cy="270" rx="77" ry="20" fill="#fff4dc"/>
+      <circle cx="545" cy="260" r="13" fill="#ff9c84"/>
+      <circle cx="575" cy="258" r="13" fill="#70b3e8"/>
+      <circle cx="605" cy="260" r="13" fill="#f6c45c"/>
+      <rect x="640" y="221" width="28" height="50" rx="5" fill="#7fa4cb"/>
+      <path d="M650 225L637 183M659 225L670 180" stroke="#a7794f" stroke-width="8" stroke-linecap="round"/>
+      ${interactiveGroup(1,1,`
+        <rect x="355" y="318" width="140" height="99" rx="8" fill="#e6ad6d" stroke="#b57c4a" stroke-width="6"/>
+        <path d="M355 349H495M425 318V417" stroke="#b57c4a" stroke-width="5"/>
+        <rect x="380" y="328" width="90" height="16" rx="3" fill="#fff0c2"/>
+      `)}
+      <rect x="540" y="90" width="170" height="115" rx="9" fill="#fff7e8" stroke="#e8cfa1" stroke-width="9"/>
+      <path d="M565 160Q590 95 625 145T686 125" fill="none" stroke="#e7a6a2" stroke-width="13" stroke-linecap="round"/>
+    `;
+  }else{
+    art=`
+      ${interactiveGroup(2,0,`
+        <rect x="45" y="68" width="510" height="266" rx="8" fill="#a87858"/>
+        <rect x="68" y="91" width="464" height="226" fill="#e3c29c"/>
+        <path d="M68 170H532M68 246H532" stroke="#a87858" stroke-width="11"/>
+        ${books(83,111,18)}
+        ${books(83,187,18)}
+        ${books(83,263,18)}
+      `)}
+      ${interactiveGroup(2,1,`
+        <rect x="620" y="100" width="135" height="247" rx="9" fill="#f2c78e" stroke="#b78557" stroke-width="9"/>
+        <circle cx="729" cy="235" r="9" fill="#c18b38"/>
+      `)}
+      <rect x="335" y="354" width="240" height="35" rx="8" fill="#c28c62"/>
+      <path d="M360 388V432M550 388V432" stroke="#a87858" stroke-width="14"/>
+      <rect x="410" y="316" width="120" height="30" rx="5" fill="#fff1bf"/>
+      <rect x="422" y="296" width="120" height="20" rx="4" fill="#82b4e5"/>
+    `;
+  }
+  return `<svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet"
+    role="group" aria-label="${rooms[id].ko} 탐험 장면">
+    ${common}${art}
+  </svg>`;
+}
+function objectKey(event,index){
+  if(event.key==="Enter"||event.key===" "){
+    event.preventDefault();
+    inspect(index);
+  }
+}
+function objectPreview(room,index){
+  const key=[
+    ["desk","window"],
+    ["painting","box"],
+    ["books","door"]
+  ][room][index];
+
+  const frame=inner=>`
+    <svg viewBox="0 0 220 170" role="img" aria-label="${escapeHTML(rooms[room].objects[index].ko)} 확대 그림">
+      <ellipse cx="110" cy="150" rx="90" ry="12" fill="#c5d9ea" opacity=".5"/>
+      ${inner}
+    </svg>`;
+
+  const art={
+    desk:`
+      <rect x="30" y="70" width="160" height="28" rx="6" fill="#b77d56"/>
+      <path d="M48 98V150M173 98V150" stroke="#926343" stroke-width="13"/>
+      <rect x="65" y="47" width="80" height="23" rx="4" fill="#f3cb6d"/>
+      <rect x="75" y="37" width="80" height="23" rx="4" fill="#fff1bb"/>
+    `,
+    window:`
+      <rect x="45" y="14" width="130" height="140" rx="7" fill="#bfe7ff" stroke="#7ba9d5" stroke-width="10"/>
+      <path d="M110 15V154M45 84H175" stroke="#7ba9d5" stroke-width="8"/>
+      <path d="M75 100L109 75L100 111L140 91L118 135" fill="none" stroke="white" stroke-width="5"/>
+    `,
+    painting:`
+      <rect x="39" y="12" width="142" height="126" fill="#fff" stroke="#b98a5d" stroke-width="12"/>
+      <rect x="53" y="25" width="114" height="100" fill="#dff2ff"/>
+      <circle cx="111" cy="54" r="22" fill="#ffd36c"/>
+      <path d="M53 117L90 74L118 104L143 76L167 113V125H53Z" fill="#8bc6ac"/>
+    `,
+    box:`
+      <rect x="42" y="58" width="136" height="95" rx="7" fill="#e6ad6d" stroke="#b87e4c" stroke-width="5"/>
+      <path d="M42 86H178M110 58V153" stroke="#b87e4c" stroke-width="5"/>
+      <rect x="69" y="65" width="82" height="17" rx="3" fill="#fff1c5"/>
+      <path d="M44 58L65 35H158L178 58" fill="#f2c68e" stroke="#b87e4c" stroke-width="5"/>
+    `,
+    books:`
+      <rect x="24" y="27" width="172" height="130" rx="5" fill="#aa7855"/>
+      <rect x="35" y="39" width="150" height="106" fill="#e4c49f"/>
+      <path d="M35 92H185" stroke="#aa7855" stroke-width="8"/>
+      ${books(43,46,6)}${books(43,100,6)}
+    `,
+    door:`
+      <rect x="59" y="8" width="102" height="150" rx="7" fill="#eac18b" stroke="#b58252" stroke-width="9"/>
+      <rect x="75" y="25" width="70" height="50" rx="4" fill="#f4d6ab" stroke="#c49362" stroke-width="3"/>
+      <circle cx="139" cy="101" r="7" fill="#bd8739"/>
+    `
+  };
+  return frame(art[key]);
+}
+
+/* OPENING */
+function intro(){
+  layout(`
+    <div class="center">
+      <span class="tag">GRADE 6 · PASSIVE VOICE ADVENTURE</span>
+      <h1>The Missing<br>Trophy Mystery</h1>
+      <p class="muted">사라진 황금 트로피의 비밀</p>
+      ${detectiveSVG()}
+      <div class="panel" style="max-width:680px;margin:15px auto">
+        <h3>🚨 긴급 사건 발생!</h3>
+        <p>학교의 황금 트로피가 사라졌어요!</p>
+        <p>교실, 미술실, 도서관을 탐험하며<br>
+        수동태 문법 미션을 해결하고 단서를 수집하세요.</p>
+        <div class="note">
+          <b>🎯 Your Mission</b><br>
+          Solve 8 puzzles · Collect 3 clues<br>
+          Write a Final Case Report · Earn your Detective Certificate!
+        </div>
+      </div>
+      <button class="btn yellow" onclick="showRules()">🔎 탐정 임무 시작하기 →</button>
+    </div>
+  `);
+}
+function showRules(){
+  sfx("click");
+  state.screen="rules";
+  render();
+}
+function rules(){
+  layout(`
+    <div class="center">
+      <span class="tag">DETECTIVE TRAINING</span>
+      <h2>탐정 훈련: 문법 기억하기</h2>
+      <p class="muted">수동태의 기본 공식을 빠르게 확인하세요!</p>
+    </div>
+    <div class="panel" style="max-width:730px;margin:auto">
+      <h3 class="center">Passive Voice</h3>
+      <div class="grammar">
+        <span>be verb</span> + <span>past participle (p.p.)</span>
+      </div>
+      <div class="grid2">
+        <div class="note">
+          <b>📘 현재 수동태</b><br>
+          am / is / are + p.p.<br><br>
+          The room <b>is cleaned</b> every day.
+        </div>
+        <div class="note">
+          <b>📙 과거 수동태</b><br>
+          was / were + p.p.<br><br>
+          The room <b>was cleaned</b> yesterday.
+        </div>
+      </div>
+      <p style="margin-top:20px">
+        💡 수동태는 행동을 <b>받는 대상</b>을 주어로 표현해요.
+        행동한 사람이 중요하지 않거나 알려지지 않았다면
+        <b>by + 행위자</b>는 생략할 수 있어요.
+      </p>
+      <div class="center">
+        <button class="btn" onclick="startGame()">사건 현장으로 이동 →</button>
+      </div>
+    </div>
+  `);
+}
+function startGame(){
+  sfx("inspect");
+  state.startedAt=Date.now();
+  state.room=0;
+  state.screen="room";
+  render();
+}
+
+/* ROOM EXPLORATION */
+function mapHTML(){
+  return `<div class="mapcards">
+    ${rooms.map((r,i)=>`
+      <div class="mapcard ${i<state.room?"complete":i===state.room?"current":"locked"}">
+        <div class="emoji">${r.icon}</div>
+        ${r.ko}<br>
+        <small>${i<state.room?"✓ 조사 완료":i===state.room?"조사 중":"🔒 잠김"}</small>
+      </div>
+    `).join("")}
+  </div>`;
+}
+function renderRoom(){
+  const r=rooms[state.room];
+  const solved=state.solved[state.room];
+  layout(`
+    <span class="tag">MISSION ${state.room+1} / 3</span>
+    <h2>${r.icon} ${r.name}</h2>
+    <p class="muted">${r.intro}</p>
+    ${mapHTML()}
+    <div style="height:18px"></div>
+    <div class="roomlayout">
+      <div>
+        <div class="scene">
+          ${roomSVG(state.room)}
+          <div class="scene-label">✨ 빛나는 물건을 직접 클릭하세요!</div>
+        </div>
+        <p class="scene-guide">
+          💡 물건 위에 마우스를 올리면 빛나요. 태블릿에서는 물건을 터치하세요.
+        </p>
+      </div>
+      <div class="panel">
+        <h3>🗂️ Investigation Log</h3>
+        <p>조사 완료: <b>${solved.length}/2</b></p>
+        ${r.objects.map((o,i)=>`
+          <div class="logitem">
+            <span>${solved.includes(i)?"✅":"🔍"} ${o.name}</span>
+            <span>${solved.includes(i)?"완료":"미조사"}</span>
+          </div>
+        `).join("")}
+        <div class="evidence ${state.clues[state.room]?"":"locked"}">
+          <b>🗝️ Evidence ${state.room+1}</b>
+          <p>${state.clues[state.room]
+            ?escapeHTML(clues[state.room])
+            :"🔒 두 개의 문법 미션을 해결하면 단서가 공개됩니다."}</p>
+        </div>
+        ${solved.length===2?`
+          <div style="height:15px"></div>
+          <button class="btn yellow" style="width:100%" onclick="nextRoom()">
+            ${state.room===2?"최종 추리 시작 →":"다음 장소로 이동 →"}
+          </button>
+        `:""}
+      </div>
+    </div>
+  `);
+}
+function inspect(index){
+  if(state.solved[state.room].includes(index))return;
+  sfx("inspect");
+  state.current=index;
+  state.selectedWords=[];
+  state.selectedError=null;
+  state.selectedOption=null;
+  state.correct=false;
+  state.feedback="";
+  state.questionTries=0;
+  state.hintUsed=false;
+  showInspection();
+}
+function removeOverlay(){
+  document.getElementById("gameOverlay")?.remove();
+}
+function showInspection(){
+  const o=rooms[state.room].objects[state.current];
+  removeOverlay();
+  document.body.insertAdjacentHTML("beforeend",`
+    <div class="overlay" id="gameOverlay">
+      <div class="modal center">
+        <span class="tag">OBJECT DISCOVERED!</span>
+        <h2>🔎 ${escapeHTML(o.name)}</h2>
+        <div class="object-preview">${objectPreview(state.room,state.current)}</div>
+        <div class="inspect-label">${escapeHTML(o.ko)} 발견!</div>
+        <p class="muted">이 물건에 숨겨진 문법 미션을 해결하세요.</p>
+        <button class="btn yellow" onclick="beginQuestion()">문법 미션 시작 →</button>
+      </div>
+    </div>
+  `);
+}
+function beginQuestion(){
+  sfx("click");
+  showQuestion();
+}
+function currentQuestion(){
+  return rooms[state.room].questions[state.current];
+}
+function showQuestion(){
+  const q=currentQuestion();
+  let body="";
+
+  if(q.type==="choice"){
+    body=`
+      <h3>${escapeHTML(q.prompt)}</h3>
+      <div class="options">
+        ${q.choices.map((c,i)=>`
+          <button class="option ${state.selectedOption===i?"selected":""}"
+            onclick="chooseOption(${i})" ${state.correct?"disabled":""}>
+            ${escapeHTML(c)}
+          </button>
+        `).join("")}
+      </div>
+    `;
+  }else if(q.type==="build"){
+    body=`
+      <p class="muted">다음 능동태 문장을 수동태로 바꿔보세요.</p>
+      <h3>${escapeHTML(q.prompt)}</h3>
+      <div class="answerarea">
+        <b>${escapeHTML(q.prefix)}</b>
+        ${state.selectedWords.map((w,i)=>`
+          <button class="word" onclick="removeWord(${i})"
+            ${state.correct?"disabled":""}>${escapeHTML(w)} ×</button>
+        `).join("")}
+        ${state.selectedWords.length===0?'<span class="muted"> ... 단어를 선택하세요.</span>':""}
+      </div>
+      <div class="wordbank">
+        ${q.words.map((w,i)=>`
+          <button class="word" onclick="addWord(${i})"
+            ${state.correct||state.selectedWords.includes(w)?"disabled":""}>
+            ${escapeHTML(w)}
+          </button>
+        `).join("")}
+      </div>
+      <div style="margin-top:13px">
+        <button class="btn outline small" onclick="clearWords()"
+          ${state.correct?"disabled":""}>↺ 다시 조립하기</button>
+      </div>
+    `;
+  }else{
+    body=`
+      <p class="muted">틀린 단어를 먼저 클릭한 다음 올바른 표현을 선택하세요.</p>
+      <div class="sentence">
+        ${q.tokens.map((t,i)=>`
+          <button class="token ${state.selectedError===i?"selected":""}"
+            onclick="selectError(${i})" ${state.correct?"disabled":""}>
+            ${escapeHTML(t)}
+          </button>
+        `).join(" ")}
+      </div>
+      ${state.selectedError!==null?`
+        <p style="margin:15px 0 8px"><b>어떤 단어로 고칠까요?</b></p>
+        <div class="options">
+          ${q.choices.map((c,i)=>`
+            <button class="option ${state.selectedOption===i?"selected":""}"
+              onclick="chooseOption(${i})" ${state.correct?"disabled":""}>
+              ${escapeHTML(c)}
+            </button>
+          `).join("")}
+        </div>
+      `:""}
+    `;
+  }
+
+  const canCheck=q.type==="build"
+    ?state.selectedWords.length===q.answer.length
+    :q.type==="error"
+      ?state.selectedError!==null&&state.selectedOption!==null
+      :state.selectedOption!==null;
+
+  removeOverlay();
+  document.body.insertAdjacentHTML("beforeend",`
+    <div class="overlay" id="gameOverlay">
+      <div class="modal">
+        <div class="flex space">
+          <span class="tag">🔍 ${escapeHTML(rooms[state.room].objects[state.current].name)}</span>
+          <span class="muted">MISSION ${state.room+1}</span>
+        </div>
+        <div class="question">${body}</div>
+        ${state.feedback?`
+          <div class="feedback ${state.correct?"success":"error"}">
+            <strong>${state.correct?"🌟 Excellent!":"💡 다시 생각해보세요!"}</strong>
+            ${escapeHTML(state.feedback)}
+          </div>
+        `:""}
+        <div class="flex" style="justify-content:flex-end;margin-top:18px">
+          ${state.correct?`
+            <button class="btn green" onclick="completeQuestion()">조사 완료 ✓</button>
+          `:`
+            <button class="btn outline small" onclick="showHint()">💡 힌트</button>
+            <button class="btn" onclick="checkAnswer()" ${canCheck?"":"disabled"}>정답 확인 →</button>
+          `}
+        </div>
+      </div>
+    </div>
+  `);
+}
+function chooseOption(i){
+  if(state.correct)return;
+  sfx("click");
+  state.selectedOption=i;
+  showQuestion();
+}
+function addWord(i){
+  if(state.correct)return;
+  const w=currentQuestion().words[i];
+  if(state.selectedWords.includes(w))return;
+  sfx("click");
+  state.selectedWords.push(w);
+  showQuestion();
+}
+function removeWord(i){
+  if(state.correct)return;
+  sfx("click");
+  state.selectedWords.splice(i,1);
+  showQuestion();
+}
+function clearWords(){
+  if(state.correct)return;
+  sfx("click");
+  state.selectedWords=[];
+  state.feedback="";
+  showQuestion();
+}
+function selectError(i){
+  if(state.correct)return;
+  sfx("click");
+  state.selectedError=i;
+  state.selectedOption=null;
+  showQuestion();
+}
+function showHint(){
+  state.hintUsed=true;
+  const q=currentQuestion();
+  state.feedback=q.type==="choice"
+    ?"주어가 단수인지 복수인지 확인하고 every day, yesterday 같은 시간 표현을 살펴보세요."
+    :q.type==="build"
+      ?"행동을 받는 대상을 주어로 놓고, 시제에 맞는 be동사와 과거분사를 사용하세요."
+      :"be동사가 주어와 시제에 맞는지, 일반동사가 과거분사 형태인지 확인하세요.";
+  showQuestion();
+}
+function checkAnswer(){
+  const q=currentQuestion();
+  let ok=false;
+
+  if(q.type==="choice")ok=state.selectedOption===q.answer;
+  if(q.type==="build"){
+    ok=JSON.stringify(state.selectedWords)===JSON.stringify(q.answer);
+  }
+  if(q.type==="error"){
+    ok=state.selectedError===q.wrong&&state.selectedOption===q.answer;
+  }
+
+  state.questionTries++;
+
+  if(ok){
+    sfx("correct");
+    stars();
+    state.correct=true;
+    state.score+=state.questionTries===1&&!state.hintUsed?100:70;
+    if(state.questionTries===1&&!state.hintUsed)state.firstTry++;
+    state.feedback=q.explanation;
+  }else{
+    sfx("wrong");
+    state.mistakes.push({room:state.room,type:q.type});
+    state.feedback=q.type==="error"
+      ?"틀린 단어의 위치와 올바른 형태를 다시 확인해 보세요."
+      :q.type==="build"
+        ?"문장 순서와 be동사의 시제를 다시 확인해 보세요."
+        :"주어의 수와 시간 표현을 다시 확인해 보세요.";
+    state.selectedOption=null;
+    if(q.type==="error")state.selectedError=null;
+    if(q.type==="build")state.selectedWords=[];
+  }
+  showQuestion();
+}
+function completeQuestion(){
+  if(!state.correct)return;
+  sfx("click");
+  removeOverlay();
+  state.solved[state.room].push(state.current);
+
+  if(state.solved[state.room].length===2){
+    state.clues[state.room]=true;
+    renderRoom();
+    showClue();
+  }else renderRoom();
+}
+function showClue(){
+  sfx("clue");
+  stars();
+  const i=state.room;
+  removeOverlay();
+  document.body.insertAdjacentHTML("beforeend",`
+    <div class="overlay" id="gameOverlay">
+      <div class="modal center">
+        <span class="tag">EVIDENCE UNLOCKED!</span>
+        <h2>새로운 단서 발견!</h2>
+        <div class="envelope"></div>
+        <div class="dossier">
+          <div class="num">🗝️ EVIDENCE ${i+1}</div>
+          <p>${escapeHTML(clues[i])}</p>
+        </div>
+        <p>${escapeHTML(clueKorean[i])}</p>
+        <button class="btn yellow" onclick="closeClue()">수사 계속하기 →</button>
+      </div>
+    </div>
+  `);
+}
+function closeClue(){
+  sfx("click");
+  removeOverlay();
+}
+function nextRoom(){
+  if(state.solved[state.room].length!==2)return;
+  sfx("inspect");
+  if(state.room<2){
+    state.room++;
+    renderRoom();
+  }else{
+    state.screen="finalIntro";
+    render();
+  }
+}
+
+/* FINAL INVESTIGATION */
+function evidenceBoard(){
+  return clues.map((c,i)=>`
+    <div class="dossier">
+      <div class="num">🗝️ EVIDENCE ${i+1}</div>
+      <p>${escapeHTML(c)}</p>
+    </div>
+  `).join("");
+}
+function finalIntro(){
+  layout(`
+    <div class="center">
+      <span class="tag">FINAL INVESTIGATION</span>
+      <h1>Solve the Mystery!</h1>
+      <p class="muted">모든 단서를 모았어요! 트로피가 어디에 있는지 추리해 보세요.</p>
+    </div>
+    <div class="grid2">
+      <div class="panel">
+        <h3>📋 Detective's Evidence Board</h3>
+        ${evidenceBoard()}
+      </div>
+      <div class="panel center">
+        ${detectiveSVG()}
+        <h3>마지막 추리 시간!</h3>
+        <p>세 가지 단서를 자세히 읽고<br>최종 질문에 답하세요.</p>
+        <div class="note">
+          사건을 해결한 뒤에는<br>
+          <b>Final Case Report</b>를 작성해야 해요!
+        </div>
+        <div style="height:18px"></div>
+        <button class="btn coral" onclick="beginFinal()">🔎 최종 추리 시작 →</button>
+      </div>
+    </div>
+  `);
+}
+function beginFinal(){
+  sfx("inspect");
+  state.screen="final";
+  state.finalIndex=0;
+  state.selectedOption=null;
+  state.finalChecked=false;
+  state.feedback="";
+  state.questionTries=0;
+  state.hintUsed=false;
+  renderFinal();
+}
+function renderFinal(){
+  const q=finals[state.finalIndex];
+  layout(`
+    <div class="center">
+      <span class="tag">FINAL CHALLENGE ${state.finalIndex+1}/2</span>
+      <h2>🕵️ Solve the Mystery!</h2>
+      <p class="muted">단서를 활용해 정답을 찾아보세요.</p>
+    </div>
+    <div class="grid2">
+      <div class="panel">
+        <h3>🗂️ 수집한 단서</h3>
+        ${evidenceBoard()}
+      </div>
+      <div class="panel">
+        <h3>${escapeHTML(q.prompt)}</h3>
+        <div class="options">
+          ${q.choices.map((c,i)=>`
+            <button class="option ${state.selectedOption===i?"selected":""}"
+              onclick="selectFinal(${i})" ${state.finalChecked?"disabled":""}>
+              ${escapeHTML(c)}
+            </button>
+          `).join("")}
+        </div>
+        ${state.feedback?`
+          <div class="feedback ${state.finalChecked?"success":"error"}">
+            <strong>${state.finalChecked?"🌟 Correct!":"💡 힌트"}</strong>
+            ${escapeHTML(state.feedback)}
+          </div>
+        `:""}
+        <div class="flex" style="margin-top:18px">
+          ${state.finalChecked?`
+            <button class="btn green" onclick="nextFinal()">
+              ${state.finalIndex===1?"사건 보고서 작성하기 →":"다음 문제 →"}
+            </button>
+          `:`
+            <button class="btn outline small" onclick="finalHint()">💡 힌트</button>
+            <button class="btn" onclick="checkFinal()"
+              ${state.selectedOption===null?"disabled":""}>정답 확인</button>
+          `}
+        </div>
+      </div>
+    </div>
+  `);
+}
+function selectFinal(i){
+  if(state.finalChecked)return;
+  sfx("click");
+  state.selectedOption=i;
+  renderFinal();
+}
+function finalHint(){
+  state.hintUsed=true;
+  state.feedback=state.finalIndex===0
+    ?"첫 번째 단서에서 트로피가 어디에 넣어졌는지 확인하세요."
+    :"두 번째와 세 번째 단서를 연결해 보세요.";
+  renderFinal();
+}
+function checkFinal(){
+  if(state.selectedOption===null||state.finalChecked)return;
+  const q=finals[state.finalIndex];
+  state.questionTries++;
+
+  if(state.selectedOption===q.answer){
+    sfx("correct");
+    stars();
+    state.finalChecked=true;
+    state.feedback=q.explanation;
+    state.finalSolved.push(state.finalIndex);
+    state.score+=state.questionTries===1&&!state.hintUsed?100:70;
+    if(state.questionTries===1&&!state.hintUsed)state.firstTry++;
+  }else{
+    sfx("wrong");
+    state.mistakes.push({room:3,type:"clue"});
+    state.feedback="아직 정답이 아니에요. Evidence Board의 단서를 다시 살펴보세요!";
+    state.selectedOption=null;
+  }
+  renderFinal();
+}
+function nextFinal(){
+  if(!state.finalChecked)return;
+  sfx("click");
+  if(state.finalIndex<1){
+    state.finalIndex++;
+    state.selectedOption=null;
+    state.finalChecked=false;
+    state.feedback="";
+    state.questionTries=0;
+    state.hintUsed=false;
+    renderFinal();
+  }else{
+    state.screen="report";
+    sfx("clue");
+    render();
+  }
+}
+
+/* FREE WRITING REPORT */
+function sentenceCount(text){
+  return text.trim()
+    ?text.trim().split(/[.!?]+/).filter(s=>s.trim()).length
+    :0;
+}
+function wordCount(text){
+  return text.trim()?text.trim().split(/\s+/).length:0;
+}
+function renderReport(){
+  layout(`
+    <div class="center">
+      <span class="tag">FINAL WRITING MISSION · 3–4 MINUTES</span>
+      <h2>📝 Detective's Final Case Report</h2>
+      <p class="muted">
+        트로피를 찾았어요! 이제 교장 선생님께 사건 보고서를 작성하세요.<br>
+        보고서를 완성해야 탐정 자격증을 받을 수 있어요.
+      </p>
+    </div>
+    <div class="report-layout">
+      <div class="panel">
+        <h3>🗂️ Evidence Board</h3>
+        ${evidenceBoard()}
+        <div class="note" style="margin-top:15px">
+          <b>🎯 Writing Mission</b><br>
+          Write 3–4 sentences about the missing trophy.<br><br>
+          • What happened to the trophy?<br>
+          • Where was it moved?<br>
+          • Where was it found?<br><br>
+          <b>Use at least 2 passive voice sentences.</b>
+        </div>
+        <p class="muted" style="font-size:13px;margin-top:14px">
+          💡 문장을 그대로 복사하기보다, 단서를 활용해 자신의 문장으로 설명해 보세요.
+        </p>
+      </div>
+      <div class="report-paper">
+        <div class="report-heading">
+          <span class="tag">OFFICIAL DETECTIVE DOCUMENT</span>
+          <h3 style="margin-bottom:5px">Final Case Report</h3>
+          <p class="muted" style="margin-bottom:0">
+            Case No. 001 · The Missing Trophy
+          </p>
+        </div>
+        <label for="detectiveName"><b>Detective's Name</b></label>
+        <input id="detectiveName" class="report-name"
+          maxlength="40" placeholder="Your name"
+          value="${escapeHTML(state.detectiveName)}"
+          oninput="updateName(this.value)">
+        <div style="height:15px"></div>
+        <label for="reportText"><b>My Report</b></label>
+        <textarea id="reportText" class="report-input"
+          placeholder="The trophy was ...&#10;After school, ...&#10;Finally, ..."
+          oninput="updateReport(this.value)">${escapeHTML(state.report)}</textarea>
+        <div class="flex space" style="margin-top:12px">
+          <div class="report-stat" id="reportStats">
+            ${sentenceCount(state.report)} sentences · ${wordCount(state.report)} words
+          </div>
+          <button class="btn outline small" onclick="copyReport()">📋 보고서 복사</button>
+        </div>
+        <div class="note" style="margin-top:16px">
+          <b>Remember!</b><br>
+          Present passive: am / is / are + p.p.<br>
+          Past passive: was / were + p.p.
+        </div>
+        <div style="margin-top:18px;text-align:right">
+          <button class="btn yellow" id="reviewButton"
+            onclick="goSelfCheck()"
+            ${canProceedReport()?"":"disabled"}>
+            Self-Check로 이동 →
+          </button>
+        </div>
+        <p class="muted" id="reportHelp"
+          style="font-size:12px;text-align:right;margin-top:10px">
+          ${canProceedReport()
+            ?"보고서를 확인하고 다음 단계로 이동하세요."
+            :"이름과 영어 문장 3개 이상을 작성하면 다음 단계로 이동할 수 있어요."}
+        </p>
+      </div>
+    </div>
+  `);
+}
+function updateName(value){
+  state.detectiveName=value;
+  updateReportUI();
+}
+function updateReport(value){
+  state.report=value;
+  updateReportUI();
+}
+function canProceedReport(){
+  return state.detectiveName.trim().length>0
+    &&sentenceCount(state.report)>=3
+    &&wordCount(state.report)>=15;
+}
+function updateReportUI(){
+  const stats=document.getElementById("reportStats");
+  const button=document.getElementById("reviewButton");
+  const help=document.getElementById("reportHelp");
+  if(stats){
+    stats.textContent=
+      sentenceCount(state.report)+" sentences · "+
+      wordCount(state.report)+" words";
+  }
+  if(button)button.disabled=!canProceedReport();
+  if(help){
+    help.textContent=canProceedReport()
+      ?"보고서를 확인하고 다음 단계로 이동하세요."
+      :"이름, 영어 문장 3개 이상, 총 15단어 이상을 작성하세요.";
+  }
+}
+async function copyReport(){
+  const text=
+    "FINAL CASE REPORT\n"+
+    "Detective: "+state.detectiveName+"\n\n"+
+    state.report;
+  try{
+    await navigator.clipboard.writeText(text);
+    alert("보고서가 복사되었어요!");
+  }catch(e){
+    const temp=document.createElement("textarea");
+    temp.value=text;
+    document.body.appendChild(temp);
+    temp.select();
+    try{
+      document.execCommand("copy");
+      alert("보고서가 복사되었어요!");
+    }catch(err){
+      alert("복사할 수 없어요. 보고서 내용을 직접 선택해 복사해 주세요.");
+    }
+    temp.remove();
+  }
+}
+function goSelfCheck(){
+  if(!canProceedReport())return;
+  sfx("inspect");
+  state.screen="selfcheck";
+  state.selfChecks=[false,false,false];
+  render();
+}
+
+/* SELF CHECK */
+function renderSelfCheck(){
+  layout(`
+    <div class="center">
+      <span class="tag">DETECTIVE'S SELF-CHECK</span>
+      <h2>🔍 Check Your Report!</h2>
+      <p class="muted">자격증을 받기 전, 작성한 보고서를 스스로 점검하세요.</p>
+    </div>
+    <div class="grid2">
+      <div class="report-paper">
+        <h3>📄 My Final Case Report</h3>
+        <p><b>Detective:</b> ${escapeHTML(state.detectiveName)}</p>
+        <div class="dossier" style="white-space:pre-wrap;overflow-wrap:anywhere">
+          ${escapeHTML(state.report)}
+        </div>
+        <button class="btn outline small" onclick="editReport()">✏️ 보고서 수정하기</button>
+      </div>
+      <div class="panel">
+        <h3>✅ Self-Check Checklist</h3>
+        <p class="muted">보고서를 읽고 다음 항목을 확인하세요.</p>
+        <div class="checklist">
+          ${[
+            "I explained what happened to the trophy.",
+            "I used at least 2 passive voice sentences.",
+            "I checked be verbs and past participles."
+          ].map((item,i)=>`
+            <label class="checkrow">
+              <input type="checkbox"
+                ${state.selfChecks[i]?"checked":""}
+                onchange="toggleCheck(${i},this.checked)">
+              <span><b>${escapeHTML(item)}</b><br>
+              <small>${[
+                "트로피에 무슨 일이 일어났는지 설명했나요?",
+                "수동태 문장을 최소 2개 사용했나요?",
+                "be동사와 과거분사 형태를 확인했나요?"
+              ][i]}</small></span>
+            </label>
+          `).join("")}
+        </div>
+        <div class="note">
+          💡 이 단계는 자기 점검 활동이에요. 앱이 영어 문법의 정확성을 자동으로 판정하지는 않아요.
+        </div>
+        <div style="margin-top:18px">
+          <button class="btn yellow" id="submitButton"
+            onclick="submitReport()" style="width:100%"
+            ${state.selfChecks.every(Boolean)?"":"disabled"}>
+            🏅 Submit Report & Unlock Certificate
+          </button>
+        </div>
+      </div>
+    </div>
+  `);
+}
+function toggleCheck(index,checked){
+  state.selfChecks[index]=checked;
+  const button=document.getElementById("submitButton");
+  if(button)button.disabled=!state.selfChecks.every(Boolean);
+}
+function editReport(){
+  sfx("click");
+  state.screen="report";
+  render();
+}
+function submitReport(){
+  if(!canProceedReport()||!state.selfChecks.every(Boolean))return;
+  state.reportSubmitted=true;
+  state.screen="certificate";
+  sfx("victory");
+  stars();
+  render();
+}
+
+/* CERTIFICATE */
+function renderCertificate(){
+  if(!state.reportSubmitted){
+    state.screen="report";
+    return render();
+  }
+
+  const minutes=state.startedAt
+    ?Math.max(1,Math.round((Date.now()-state.startedAt)/60000))
+    :0;
+  const firstTryRate=Math.round(state.firstTry/8*100);
+  const today=new Date().toLocaleDateString("en-US",{
+    year:"numeric",month:"long",day:"numeric"
+  });
+
+  layout(`
+    <div class="center no-print">
+      <span class="tag">CASE CLOSED · MISSION COMPLETE!</span>
+      <h1>🎉 Mystery Solved!</h1>
+      <p class="muted">
+        사건 보고서를 제출했어요! 탐정 자격증이 발급되었습니다.
+      </p>
+      ${trophySVG()}
+    </div>
+
+    <div class="certificate" id="certificate">
+      <p style="font-size:13px;letter-spacing:3px;font-weight:900;color:#a77d2f">
+        OFFICIAL DETECTIVE ACADEMY
+      </p>
+      <h1>Certificate of Completion</h1>
+      <p>This certificate is proudly presented to</p>
+      <div class="cert-name">${escapeHTML(state.detectiveName)}</div>
+      <p style="margin-top:23px">
+        for successfully completing<br>
+        <b>The Missing Trophy Mystery</b><br>
+        and submitting the Final Case Report.
+      </p>
+      <div class="cert-seal">🏅</div>
+      <h3>Junior Grammar Detective</h3>
+      <p style="font-size:14px">
+        Passive Voice Adventure · Grade 6
+      </p>
+      <p style="font-size:13px;color:#947742">
+        ${today}
+      </p>
+      <p style="font-size:12px;color:#8a8a83;margin-top:15px">
+        Certificate of activity completion, not a verified grammar proficiency assessment.
+      </p>
+    </div>
+
+    <div class="result no-print" style="max-width:790px;margin:20px auto">
+      <h2>🏆 Your Mission Results</h2>
+      <div class="grid2">
+        <div class="panel">
+          <h2>${state.score} XP</h2>획득한 점수
+        </div>
+        <div class="panel">
+          <h2>8 / 8</h2>완료한 문제
+        </div>
+        <div class="panel">
+          <h2>${firstTryRate}%</h2>
+          첫 시도 정답률<br>
+          <small>(힌트 없이 맞힌 문항)</small>
+        </div>
+        <div class="panel">
+          <h2>${minutes} min</h2>플레이 시간
+        </div>
+      </div>
+      <div class="note" style="margin-top:18px;text-align:left">
+        <b>📘 Mission Summary</b><br>
+        You investigated the mystery, collected evidence,
+        practiced passive voice, and wrote your own case report!
+      </div>
+      <div class="flex" style="justify-content:center;margin-top:20px">
+        <button class="btn yellow" onclick="window.print()">🖨️ 자격증 인쇄하기</button>
+        <button class="btn outline" onclick="copyReport()">📋 보고서 복사하기</button>
+        <button class="btn outline" onclick="restartGame()">↺ 다시 플레이하기</button>
+      </div>
+    </div>
+
+    <div class="print-report" style="display:none">
+      <h2>Final Case Report</h2>
+      <p><b>Detective:</b> ${escapeHTML(state.detectiveName)}</p>
+      <p>${escapeHTML(state.report)}</p>
+    </div>
+  `);
+}
+function restartGame(){
+  sfx("click");
+  resetState();
+  render();
+}
+
+/* INITIALIZE */
+render();
+</script>
+</body>
+</html>
